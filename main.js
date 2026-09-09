@@ -127,7 +127,7 @@ if (!app.requestSingleInstanceLock()) app.quit();
 
 // Paineis presos ao dominio do jogo: nada de popup, e navegar o painel
 // (que carrega a sessao logada) para outro site abre no navegador de fora.
-const GAME = 'https://poke.idleworld.online';
+const GAME = 'https://pokeidle.online';
 // Limite deslizante: a pagina do jogo (ou um XSS nela) pedia abrir link e o navegador do
 // usuario abria sem limite. 3 por 10s cobre o uso real (clicar num link) e corta enxurrada.
 let aberturas = [];
@@ -142,7 +142,7 @@ const abreFora = (url) => {
 app.on('web-contents-created', (_e, contents) => {
   if (contents.getType() !== 'webview') return;
   contents.setWindowOpenHandler(({ url }) => { abreFora(url); return { action: 'deny' }; });
-  // compara a ORIGEM, nao o prefixo: 'https://poke.idleworld.online.evil.com' comeca igual e
+  // compara a ORIGEM, nao o prefixo: 'https://pokeidle.online.evil.com' comeca igual e
   // passaria, levando a sessao logada pra um site clonado sem barra de endereco
   const mesmoJogo = (u) => { try { return new URL(u).origin === new URL(GAME).origin; } catch { return false; } };
   const guarda = (e, url) => {
@@ -265,7 +265,7 @@ function setAutoStart(on) {
   if (process.platform !== 'win32') return false;
   try {
     if (on) {
-      const opts = { target: process.execPath, description: 'PokeGrid', appUserModelId: 'online.idleworld.pokegrid' };
+      const opts = { target: process.execPath, description: 'PokeGrid', appUserModelId: 'online.pokeidle.pokegrid' };
       if (!app.isPackaged) opts.args = `"${app.getAppPath()}"`; // rodando pelo codigo: electron + a pasta do app
       shell.writeShortcutLink(startupLnk(), 'create', opts);
     } else {
@@ -303,7 +303,7 @@ app.whenReady().then(() => {
   // Nada aqui pode derrubar a criacao da janela: se qualquer peca do sistema falhar (registro,
   // particao de sessao corrompida, bandeja), o app tem que abrir assim mesmo. Antes destas
   // guardas, uma excecao aqui deixava o processo vivo e SEM JANELA, que e o pior sintoma possivel.
-  try { app.setAppUserModelId('online.idleworld.pokegrid'); } catch (e) { logErro('boot', 'appUserModelId: ' + e.message); } // notificacoes do Windows com o nome certo
+  try { app.setAppUserModelId('online.pokeidle.pokegrid'); } catch (e) { logErro('boot', 'appUserModelId: ' + e.message); } // notificacoes do Windows com o nome certo
 
   // Nega pedidos de permissao dos jogos (mic, camera, localizacao, notificacao...).
   for (let i = 1; i <= 4; i++)

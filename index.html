@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <!-- Defesa em profundidade: a interface nao faz rede (fetch/XHR/WS bloqueados), so carrega img do jogo/data.
      Se algum dado escapar do escape, nao ha canal pra vazar as contas salvas. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data: https://poke.idleworld.online https://raw.githubusercontent.com https://pokexguides.com; font-src 'self' data:; connect-src https://api.github.com; frame-src https://poke.idleworld.online; child-src https://poke.idleworld.online; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data: https://pokeidle.online https://raw.githubusercontent.com https://pokexguides.com; font-src 'self' data:; connect-src https://api.github.com; frame-src https://pokeidle.online; child-src https://pokeidle.online; base-uri 'none'; form-action 'none'">
 <title>PokeGrid</title>
 <script src="src/domain/iv-math.js"></script>
 <style>
@@ -493,7 +493,7 @@
         <button id="hunt" title="Abre o Hunt Analyzer em todos os painéis">🎯 Hunt</button>
         <button id="tierBtn">🏆 Tierlist</button>
         <button id="scriptsBtn" title="Rode userscripts (IV calc e os seus) nos painéis">🧩 Scripts</button>
-        <button id="count" title="Quantas contas rodar ao mesmo tempo (1 a 4)">🔢 Painéis: 4</button>
+        <button id="count" title="Quantas contas rodar ao mesmo tempo (1 a 2)">🔢 Painéis: 2</button>
         <button id="alerts" title="Avisa quando uma conta cai ou fica sem pokébola">🔔 Alertas</button>
         <button id="sellguard" title="Pede confirmação antes de vender shiny, Lendária+ ou item raro">🛡 Venda protegida</button>
         <button id="chat" title="Mostra ou esconde o chat do jogo em todos os painéis">💬 Chat</button>
@@ -619,8 +619,8 @@ function lsGet(k) { try { return localStorage.getItem(k); } catch { return null;
   }
   function lsArr(k) { try { const v = JSON.parse(lsGet(k) || "[]"); return Array.isArray(v) ? v : []; } catch { return []; } }
 function lsDel(k) { try { localStorage.removeItem(k); } catch {} }
-const HOME_URL  = 'https://poke.idleworld.online/?ref=CJNKGPB'; // link do referral (botao de copiar)
-  const LOGIN_URL = 'https://poke.idleworld.online/login';
+const HOME_URL  = 'https://pokeidle.online/?ref=CJNKGPB'; // link do referral (botao de copiar)
+  const LOGIN_URL = 'https://pokeidle.online/login';
   const START_URL = LOGIN_URL + '?ref=CJNKGPB'; // abre na tela de login, mantendo o referral
   const grid = document.getElementById('grid');
 
@@ -630,7 +630,7 @@ const HOME_URL  = 'https://poke.idleworld.online/?ref=CJNKGPB'; // link do refer
   const lastLogin = [0, 0, 0, 0]; // cooldown do auto-login por painel (evita ressubmeter em loop)
   const deadT = [0, 0, 0, 0]; // ticks seguidos sem sessao viva: o jogo nao navega sozinho pro login
   const alertedBalls = [false, false, false, false]; // ja avisou "sem pokebola" nesta falta?
-  let count = Math.min(4, Math.max(1, +lsGet('count') || 4)); // quantos paineis rodar (1 a 4)
+  let count = Math.min(2, Math.max(1, +lsGet('count') || 2)); // quantos paineis rodar (1 a 4)
   let muted = lsGet('muted') === '1';
 
   // ----- Idioma (interface + jogo) -----
@@ -2139,7 +2139,7 @@ return {live,hasBalls,hasInv,balls,potions,revives,prevHunt:resumo(P.prev),shiny
     const slug = String(raw).toLowerCase().replace(/[^a-z0-9_-]/g, '');
     if (!slug) return '';
     // emblema é um asset do jogo em /assets/clans/{slug}.png; some sozinho se o clã nao tiver imagem
-    return '<img class="clan-emb" src="https://poke.idleworld.online/assets/clans/' + slug + '.png" alt="" title="Clã: ' + esc(String(raw)) + '" onerror="this.style.display=\'none\'">';
+    return '<img class="clan-emb" src="https://pokeidle.online/assets/clans/' + slug + '.png" alt="" title="Clã: ' + esc(String(raw)) + '" onerror="this.style.display=\'none\'">';
   };
 
   // Construtores de cada seção (retornam HTML). Recebem d (dados) e a (analyzer da sessão).
@@ -3134,7 +3134,7 @@ return {live,hasBalls,hasInv,balls,potions,revives,prevHunt:resumo(P.prev),shiny
     ordered.forEach(r => { const dm2 = (depCache[r.i] || {}).m || {}; for (const id in dm2) { const q = +dm2[id] || 0; if (!q) continue; const e = tot[id] || (tot[id] = { q: 0, por: [] }); e.q += q; e.por.push(esc(r.name) + ' (depot): ' + nc(q)); } });
       // mesma regra do proprio jogo: URL completa usa direto; caminho /assets/... e do servidor do jogo
       const icSrc = (u) => /^https:\/\/(pokexguides\.com|poke\.idleworld\.online|raw\.githubusercontent\.com)\/[\w\-./%]+$/.test(u) ? u
-        : /^\/assets\/[\w\-./]+\.(png|gif|webp)$/.test(u) ? 'https://poke.idleworld.online' + u : '';
+        : /^\/assets\/[\w\-./]+\.(png|gif|webp)$/.test(u) ? 'https://pokeidle.online' + u : '';
       let lista = Object.keys(tot).map(id => { const m2 = (itensCache || {})[id] || {}; return { n: m2.n || ('#' + id), ic: m2.ic || '', q: tot[id].q, por: tot[id].por }; });
       if (filtro) lista = lista.filter(x => x.n.toLowerCase().includes(filtro));
       lista.sort((a, b) => b.q - a.q);

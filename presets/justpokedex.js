@@ -3,7 +3,7 @@
 // @namespace    poke-idle-world-tools
 // @version      3.0
 // @description  Lê os dados dos Pokémon e estima seus IVs individuais
-// @match        https://poke.idleworld.online/*
+// @match        https://pokeidle.online/*
 // @grant        none
 // @run-at       document-idle
 // ==/UserScript==
